@@ -12,4 +12,9 @@ more flexible replacement.
 
 Print with a FFM printer, and mount on top of the slow axis.
 Clip the binder line into the C shaped holder.
-	
+
+`zd5_needle.scad`
+-----------------
+
+FFM printable replacement needle for the 5mm connector on the
+ZD5 powder recyling station's airline.
