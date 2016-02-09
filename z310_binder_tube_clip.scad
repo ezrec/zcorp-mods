@@ -24,23 +24,38 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-width = 41.3;
+width = 41.3 + 2;
 length= 15;
-height = 20;
+height = 26;
 wall=0.4*3;
 cut_percent = 0.7;
 
 diameter = 4.7;
 
-difference() {
-    translate([-(width+wall*2)/2, -length/2, 0]) cube([wall*2+width, length, height]);
-    translate([-width/2, -length/2-0.1, -0.1]) cube([width, length+0.2, height-wall++0.1]);
+module clip_leg()
+{
+   translate([width/2, length/2, -0.1]) rotate([180, 2, 0]) {
+       cube([wall, length, height]);
+       for (h = [1.2:2:height]) {
+            translate([0, 0, h]) {
+                rotate([-90, 60, 0]) cylinder(r = 1, h = length, $fn=3);
+            }
+        }
+        translate([0, length, height/2])
+            children();
+    }
 }
 
-translate([width/2+wall+diameter/2, 0, height*.75]) {
-    scale([1, 1, height*0.25]) difference() {
-        cylinder(d=diameter+wall*2, h=1, $fn=60);
-        translate([0, 0, -0.1]) cylinder(d=diameter, h=1+0.2, $fn=60);
-        translate([0, -diameter/2 * cut_percent, -0.1]) cube([diameter, diameter*cut_percent, 1+0.2]);
-    }
+translate([-width/2-wall, -length/2, -wall])
+    cube([width+wall*2, length, wall]);
+clip_leg();
+mirror([1, 0, 0])
+    clip_leg() union() {
+        translate([wall+diameter/2, 0, 0]) {
+              rotate([90, 0, 0]) scale([1, 1, height*0.25]) difference() {
+                cylinder(d=diameter+wall*2, h=1, $fn=60);
+                translate([0, 0, -0.1]) cylinder(d=diameter, h=1+0.2, $fn=60);
+                translate([0, -diameter/2 * cut_percent, -0.1]) cube([diameter, diameter*cut_percent, 1+0.2]);
+            }
+        }
 }
